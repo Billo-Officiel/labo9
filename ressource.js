@@ -16,8 +16,12 @@ app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
 
-let users = {};      
-const tokens = {};  
+let users = {};
+const tokens = {};
+
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
 
 app.post("/users", (req, res) => {
   const { username, password } = req.body;
@@ -36,12 +40,12 @@ app.get("/login", (req, res) => {
   if (req.cookies.user_token && tokens[req.cookies.user_token]) {
     return res.redirect("/profile");
   }
-  res.render("login"); 
+  res.render("login");
 });
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  
+
   if (users[username] === password) {
     const token = uuidv4();
     tokens[token] = username;
@@ -51,7 +55,7 @@ app.post("/login", (req, res) => {
     });
     return res.status(200).send({ message: "Login successful" });
   } else {
-    return res.sendStatus(401); 
+    return res.sendStatus(401);
   }
 });
 
